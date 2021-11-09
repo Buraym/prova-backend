@@ -18,13 +18,12 @@ public class contatoController {
     private ContatoRepository repository;
 
     @GetMapping
-    @RequestMapping(value = "", method = RequestMethod.GET, produces="application/json")
+
     public List<Contato> listaContatos() {
         return (List<Contato>) repository.findAll();
     }
 
     @GetMapping("/{id}")
-    @RequestMapping(value = "", method = RequestMethod.GET, produces="application/json")
     public ResponseEntity<?> achaContato(@PathVariable Long id) {
         Optional<Contato> contato = repository.findById(id);
         return new ResponseEntity<>(contato, null, 1);
@@ -32,9 +31,13 @@ public class contatoController {
 
     @PostMapping("")
     public ResponseEntity<?> cadastraContato(@RequestBody Contato contato) {
-        if( repository.existsById(contato.getId()) ){ return new ResponseEntity<>("CONTATOEXISTENTE", null, 1); }
-        repository.save(contato);
-        return new ResponseEntity<>(contato, null, 1);
+        if( !repository.findByTelefone(contato.getTelefone()).isEmpty() ||
+                        !repository.findByEmail(contato.getEmail()).isEmpty() ){
+            return new ResponseEntity<>("CONTATOEXISTENTE", null, 1);
+        } else {
+            repository.save(contato);
+            return new ResponseEntity<>(contato, null, 1);
+        }
     }
 
     @PutMapping("/{id}")
