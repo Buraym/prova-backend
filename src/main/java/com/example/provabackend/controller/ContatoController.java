@@ -12,24 +12,26 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/contatos")
-public class contatoController {
+public class ContatoController {
 
     @Autowired
     private ContatoRepository repository;
 
     @GetMapping
-
+    @CrossOrigin(origins = "http://localhost:8080")
     public List<Contato> listaContatos() {
         return (List<Contato>) repository.findAll();
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin(origins = "http://localhost:8080")
     public ResponseEntity<?> achaContato(@PathVariable Long id) {
         Optional<Contato> contato = repository.findById(id);
         return new ResponseEntity<>(contato, null, 1);
     }
 
     @PostMapping("")
+    @CrossOrigin(origins = "http://localhost:8080")
     public ResponseEntity<?> cadastraContato(@RequestBody Contato contato) {
         if( !repository.findByTelefone(contato.getTelefone()).isEmpty() ||
                         !repository.findByEmail(contato.getEmail()).isEmpty() ){
@@ -41,6 +43,7 @@ public class contatoController {
     }
 
     @PutMapping("/{id}")
+    @CrossOrigin(origins = "http://localhost:8080")
     public ResponseEntity<?> atualizaContato(@PathVariable Long id, @RequestBody Contato contato) {
         return repository.findById(id)
                 .map(antigoContato -> {
@@ -54,8 +57,10 @@ public class contatoController {
     }
 
     @DeleteMapping("/{id}")
+    @CrossOrigin(origins = "http://localhost:8080")
     void DeletarContato(@PathVariable Long id) { repository.deleteById(id); }
 
     @DeleteMapping
+    @CrossOrigin(origins = "http://localhost:8080")
     void DeletarTodosContatos() { repository.deleteAll(); }
 }
